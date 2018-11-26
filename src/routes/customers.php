@@ -119,3 +119,23 @@ $app->put('/api/custoomer/update/{id}', function(Request $request, Response $res
 		echo '{"error": {"text": ' . $e->getMessage() . '}';
 	}
 });
+
+// Delete Customer
+$app->delete('/api/customer/delete/{id}', function(Request $request, Response $response){
+	$id = $request->getAttribute('id');
+	
+	$sql = "DELETE FROM customers WHERE id = $id";
+	
+	try{
+		$db = new db();
+		$db = $db->connect();
+		
+		$stmt = $db->prepare($sql);
+		$stmt->execute();
+		$db = null;
+		
+		echo '{"notice": {"text": "Customer Deleted"}';
+	} catch(PDOException $e){
+		echo '{"error": {"text": ' . $e->getMessage() . '}';
+	}
+});
