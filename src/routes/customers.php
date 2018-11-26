@@ -75,3 +75,47 @@ $app->post('/api/customer/add', function(Request $request, Response $response){
 		echo '{"error": {"text": ' . $e->getMessage() . '}';
 	}
 });
+
+// Update Customer
+$app->put('/api/custoomer/update/{id}', function(Request $request, Response $response){
+	$id = $request->getAttribute('id');
+	$first_name 	= $request->getParam('first_name');
+	$last_name 		= $request->getParam('last_name');
+	$phone 			= $request->getParam('phone');
+	$email 			= $request->getParam('email');
+	$address 		= $request->getParam('address');
+	$city 			= $request->getParam('city');
+	$state 			= $request->getParam('state');
+	
+	$sql = "
+	UPDATE customers SET
+		FIRST_NAME 	= :first_name,
+		LAST_NAME 	= :last_name,
+		PHONE		= :phone,
+		ADDRESS 	= :address,
+		CITY		= :city,
+		STATE		= :state
+	WHERE id = $id
+	";
+	
+	try{
+		$db = new db();
+		$db = $db->connect();
+		
+		$stmt = $db->prepare($sql);
+		
+		$stmt->bindParam(':first_name', $first_name);
+		$stmt->bindParam(':last_name', 	$last_name);
+		$stmt->bindParam(':phone', 		$phone);
+		$stmt->bindParam(':email', 		$email);
+		$stmt->bindParam(':address', 	$address);
+		$stmt->bindParam(':city', 		$city);
+		$stmt->bindParam(':state', 		$state);
+		
+		$stmt->execute();
+		
+		echo '{"notice": {"text": "Customer Update"}';
+	} catch(PDOException $e){
+		echo '{"error": {"text": ' . $e->getMessage() . '}';
+	}
+});
